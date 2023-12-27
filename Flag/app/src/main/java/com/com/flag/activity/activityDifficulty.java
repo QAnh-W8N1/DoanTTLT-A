@@ -18,6 +18,8 @@ public class activityDifficulty extends Activity {
     Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        /* RECEIVE NAVIGATION TO NEXT ACTIVITY */
         Intent previousintent = getIntent();
         if (previousintent != null) {
             style = previousintent.getStringExtra("style");
@@ -25,8 +27,9 @@ public class activityDifficulty extends Activity {
         else {
             style = "quizgame";
         }
-        super.onCreate(savedInstanceState);
+        /* -------------------------------------------------------------------------------------- */
         setContentView(R.layout.activity_difficulty);
+        /* SEND DATA PATH TO READ DIFFICULTY EASY */
         Easy = (Button)findViewById(R.id.ButtonDiffEasy);
         Easy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +44,8 @@ public class activityDifficulty extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
+        /* SEND DATA PATH TO READ DIFFICULTY HARD */
         Hard = (Button)findViewById(R.id.ButtonDiffHard);
         Hard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +60,8 @@ public class activityDifficulty extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
+        /* SEND DATA PATH TO READ DIFFICULTY EXPERT */
         Expert = (Button) findViewById(R.id.ButtonDiffExpert);
         Expert.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,5 +76,6 @@ public class activityDifficulty extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
     }
 }

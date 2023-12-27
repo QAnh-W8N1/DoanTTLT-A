@@ -23,13 +23,14 @@ public class activityResult extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-
+        /* RETRIEVE SCORE FROM THE CONCLUSION OF GAMEPLAY */
         Score = (TextView) findViewById(R.id.TextResultScore);
         Intent callerIntent=getIntent();
         Bundle packageFromCaller= callerIntent.getBundleExtra("MyPackage");
         assert packageFromCaller != null;
         Score.setText("" + packageFromCaller.getInt("Progress"));
-
+        /* -------------------------------------------------------------------------------------- */
+        /* FUNCTION TRY AGAIN TO PLAY THE GAME */
         TryAgain = (Button)findViewById(R.id.ButtonResultTA);
         TryAgain.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,6 +39,8 @@ public class activityResult extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
+        /* FUNCTION TAP OUT TO BACK TO MAIN ACTIVITY */
         TapOut = (Button)findViewById(R.id.ButtonResultTO);
         TapOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,6 +49,8 @@ public class activityResult extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
+        /* SYSTEM MUTE */
         MuteSound = findViewById(R.id.ButtonStopMusic);
         MuteSound.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,5 +58,6 @@ public class activityResult extends Activity {
                 soundBackground.Mute();
             }
         });
+        /* -------------------------------------------------------------------------------------- */
     }
 }

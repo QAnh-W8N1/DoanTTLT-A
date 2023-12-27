@@ -16,6 +16,7 @@ public class activityPlayStyle extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playstyle);
+        /* PLAY QUIZ GAME */
         Quiz = (Button)findViewById(R.id.ButtonStyleQuiz);
         Quiz.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -25,6 +26,8 @@ public class activityPlayStyle extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
+        /* PLAY SURVIVAL */
         Survival = (Button)findViewById(R.id.ButtonStyleSurv);
         Survival.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,6 +37,8 @@ public class activityPlayStyle extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
+        /* STUDY FLASH CARDS */
         FCard = (Button) findViewById(R.id.ButtonStyleFCard);
         FCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,5 +48,6 @@ public class activityPlayStyle extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
     }
 }

@@ -21,18 +21,19 @@ import com.com.flag.R;
 public class activityHighScore extends Activity {
     TextView Txt1;
     Button PlayGame, Exit, MuteSound;
-    int HighScore = Integer.parseInt(player.getScore());
+    int HighScore;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setContentView(R.layout.activity_highscore);
+        /* RETRIEVE HIGH SCORE FROM THE USER DATABASE */
+        HighScore = Integer.parseInt(player.getScore());
         Txt1 = (TextView)findViewById(R.id.TextHSScore);
         Txt1.setText(""+ HighScore);
+        /* -------------------------------------------------------------------------------------- */
+        /* FUNCTION PLAY GAME */
         PlayGame = (Button)findViewById(R.id.ButtonHSPG);
-        Exit= (Button)findViewById(R.id.ButtonHSExit);
-        Intent callerIntent=getIntent();
-        Bundle packageFromCaller = callerIntent.getBundleExtra("MyPackage");
         PlayGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,6 +41,9 @@ public class activityHighScore extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
+        /* FUNCTION EXIT */
+        Exit= (Button)findViewById(R.id.ButtonHSExit);
         Exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,6 +51,8 @@ public class activityHighScore extends Activity {
                 startActivity(intent);
             }
         });
+        /* -------------------------------------------------------------------------------------- */
+        /* SYSTEM MUTE */
         MuteSound = findViewById(R.id.ButtonStopMusic);
         MuteSound.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,5 +60,6 @@ public class activityHighScore extends Activity {
                 soundBackground.Mute();
             }
         });
+        /* -------------------------------------------------------------------------------------- */
     }
 }

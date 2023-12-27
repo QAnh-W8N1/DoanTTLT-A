@@ -20,24 +20,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /* BACKGROUND MUCSIC SETUP */
+        /* BACKGROUND MUSIC SETUP */
         soundBackground.GenerateBackgroundMusic(this);
         soundBackground.Mute();
-
-        /* FUNCTION PLAY GAME */
+        /* -------------------------------------------------------------------------------------- */
         PlayGame = findViewById(R.id.ButtonMainPlay);
         PlayGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /* SET UP FOR NEW USER */
                 PlayerName = ((EditText) findViewById(R.id.EditMainName)).getText().toString();
                 if (PlayerName.equals(""))
                     PlayerName = "Anonymous";
                 player = new Users(MainActivity.this, PlayerName);
-                /* Khởi tạo Intent, bắt đầu activity tiếp theo */
+                /* -------------------------------------------------------------------------------*/
                 Intent intent = new Intent(MainActivity.this, activityEntryPoint.class);
                 startActivity(intent);
             }
         });
+        /* SYSTEM MUTE */
         MuteSound = findViewById(R.id.ButtonStopMusic);
         MuteSound.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,5 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 soundBackground.Mute();
             }
         });
+        /* -------------------------------------------------------------------------------------- */
     }
 }

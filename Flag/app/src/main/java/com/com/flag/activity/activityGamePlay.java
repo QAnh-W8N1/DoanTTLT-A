@@ -47,14 +47,23 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /* SET UP SOUND EFFECTS FUNCTION */
         soundEffect.GenerateSound(this);
+        /* -------------------------------------------------------------------------------------- */
+        /* SET UP TEXT TO SPEECH FUNCTION */
         textSpeech.GenerateTextSpeech(this);
+        /* -------------------------------------------------------------------------------------- */
+        /* RECEIVE FILE PATH INDICATES DIFFICULTY OF THE DATASET */
         Intent intent = getIntent();
         if (intent != null)
         {
             path = intent.getStringExtra("path");
         }
+        /* -------------------------------------------------------------------------------------- */
+        /* LOAD HIGH SCORE BASED ON USER NAME */
         LoadHighScore();
+        /* -------------------------------------------------------------------------------------- */
+        /* READ FILE NAMES FROM CLOUD STORAGE INTO A LIST */
         StorageReference listRef = FirebaseStorage.getInstance().getReference().child(path);
         listRef.listAll()
                 .addOnSuccessListener(listResult -> {
@@ -83,8 +92,9 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(activityGamePlay.this, "Error _ Retrieving Data", Toast.LENGTH_SHORT).show());
-
+        /* -------------------------------------------------------------------------------------- */
     }
+    /* SET UP ON LONG CLICK READ THE CONTEXT OUT LOUD */
     @Override
     public boolean onLongClick(View v) {
         int idCheck = v.getId();
@@ -105,12 +115,17 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
         }
         return false;
     }
+    /* -------------------------------------------------------------------------------------------*/
+    /* SET UP ON CLICK AS THE MAIN CONTROLLER, NAVIGATE USER THROUGHOUT THIS GAMEPLAY ACTIVITY */
     @Override
     public void onClick(View v) {
         int idCheck = v.getId();
+        /* MUTE SYSTEM */
         if (idCheck == R.id.ButtonStopMusic) {
             soundBackground.Mute();
         }
+        /* -------------------------------------------------------------------------------------- */
+        /* USE SUPPORT FEATURES */
         else if (idCheck == R.id.ButtonHelp1) {
             support.getHelp1();
             NextGameplay(position);
@@ -121,11 +136,15 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
         else if (idCheck == R.id.ButtonHelp3) {
             DisableAnswerButton(support.getHelp3(), -1);
         }
+        /* -------------------------------------------------------------------------------------- */
+        /* NEXT QUESTION */
         else if (idCheck == R.id.ButtonNext) {
             position++;
             questionList.List.remove(id);
             NextGameplay(position);
         }
+        /* -------------------------------------------------------------------------------------- */
+        /* HANDLING CHOSEN ANSWER */
         else {
             if (!AnswerCheck) {
                 if (CheckAnswer(idCheck))
@@ -135,7 +154,10 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
                         position = num;
                 }
             }
+            /* ---------------------------------------------------------------------------------- */
+            /* HANDLING ON COMPLETE OF THE CURRENT GAME */
             if (position >= num) {
+                /* SOUND EFFECT FOR ENDING THE GAME */
                 if (soundBackground.systemSound) {
                     setVolumeControlStream(AudioManager.STREAM_MUSIC);
                     if (Progress >= quiz)
@@ -143,27 +165,41 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
                     else
                         soundEffect.Effect.play(soundEffect.soundBadEG, 1, 1, 0, 0, 1);
                 }
+                /* -------------------------------------------------------------------------------------- */
+                /* SENDING SCORE TO ACTIVITY RESULT FOR DISPLAY */
                 Intent intent = new Intent(activityGamePlay.this, activityResult.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("Progress", Progress);
                 intent.putExtra("MyPackage", bundle);
                 startActivity(intent);
+                /* -------------------------------------------------------------------------------------- */
+                /* CHECK HIGH SCORE FOR A POSSIBLE UPDATE */
                 if (Progress > HighScore) {
                     HighScore = Progress;
                     SaveHighScore();
                 }
                 finish();
             }
+            /* ---------------------------------------------------------------------------------- */
         }
     }
-
+    /* -------------------------------------------------------------------------------------- */
+    /* FUNCTION HELPS HANDLING WHEN AN ANSWER IS LOCKED IN */
     private boolean CheckAnswer(int idCheck) {
+        /* SET FLAG */
         AnswerCheck = true;
+        /* STOP COUNTDOWN */
         if (CountdownTimer != null)
             CountdownTimer.cancel();
+        /* -------------------------------------------------------------------------------------- */
+        /* DISABLE BUTTONS */
         DisableAnswerButton(new int[]{R.id.ButtonAnsA, R.id.ButtonAnsB, R.id.ButtonAnsC, R.id.ButtonAnsD}, idCheck);
         DisableHelpButton();
+        /* -------------------------------------------------------------------------------------- */
+        /* USE METHOD OF QUESTIONLIST TO CHECK THE CHOSEN ANSWER */
         boolean correct = questionList.CheckAnswer(id, idCheck);
+        /* -------------------------------------------------------------------------------------- */
+        /* SOUND EFFECT FOR ENDING THE GAME */
         if (soundBackground.systemSound) {
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
             if (correct)
@@ -171,23 +207,33 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
             else
                 soundEffect.Effect.play(soundEffect.soundWrongAns, 1, 1, 0, 0, (float)1.5);
         }
+        /* -------------------------------------------------------------------------------------- */
         return correct;
     }
+    /* FUNCTION HELPS HANDLING WHEN GO TO NEXT QUESTION */
     private void NextGameplay(int pos)
     {
+        /* STOP COUNTDOWN */
         if (CountdownTimer != null)
             CountdownTimer.cancel();
+        /* -------------------------------------------------------------------------------------- */
+        /* SET FLAG */
         AnswerCheck = false;
         if (pos % 2 == 0)
             GameplayLayout2();
         else
             GameplayLayout1();
     }
+    /* FUNCTIONS HELP SETTING UP FOR NEW GAMEPLAY */
     private void GameplayLayout1(){
         setContentView(R.layout.activity_gamelayout_1);
+        /* SET UP LAYOUT */
         DisplayLayout1(questionList.List);
+        /* SET UP SUPPORT */
         EnableHelpButton();
+        /* SET UP COUNTDOWN */
         StartCountDown();
+        /* SET UP CONTROLLER */
         for (int id : ButtonArr) {
             View v = findViewById(id);
             v.setOnClickListener(this);
@@ -196,9 +242,13 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
     }
     private void GameplayLayout2(){
         setContentView(R.layout.activity_gamelayout_2);
+        /* SET UP LAYOUT */
         DisplayLayout2(questionList.List);
+        /* SET UP SUPPORT */
         EnableHelpButton();
+        /* SET UP COUNTDOWN */
         StartCountDown();
+        /* SET UP CONTROLLER */
         for (int id : ButtonArr) {
             View v = findViewById(id);
             v.setOnClickListener(this);
@@ -206,6 +256,7 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
         View z = findViewById(R.id.Layout2_TextQuestion);
         z.setOnLongClickListener(this);
     }
+    /* ------------------------------------------------------------------------------------------ */
 
     @SuppressLint({"SetTextI18n", "DiscouragedApi"})
     private void DisplayLayout1(ArrayList<QuestionNare> L) {
@@ -213,6 +264,7 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
         TextView Result;
         Result = findViewById(R.id.TextResult);
         ((TextView) findViewById(R.id.TextQuesID)).setText("QUESTION " + position);
+        /* READ IMAGE FROM CLOUD STORAGE BASED ON GIVEN FILE NAME INTO A BITMAP */
         StorageReference storeref;
         storeref = FirebaseStorage.getInstance().getReference(path + "/" + L.get(id).Context + ".png");
         try {
@@ -225,10 +277,13 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
         catch (IOException e) {
             e.printStackTrace();
         }
+        /* -------------------------------------------------------------------------------------- */
+        /* READ COUNTRY NAMES INTO BUTTONS CONTEXT AS ANSWERS */
         ((Button) findViewById(R.id.ButtonAnsA)).setText(L.get(id).AnswerA);
         ((Button) findViewById(R.id.ButtonAnsB)).setText(L.get(id).AnswerB);
         ((Button) findViewById(R.id.ButtonAnsC)).setText(L.get(id).AnswerC);
         ((Button) findViewById(R.id.ButtonAnsD)).setText(L.get(id).AnswerD);
+        /* -------------------------------------------------------------------------------------- */
         Result.setText("" + Progress);
     }
     @SuppressLint({"SetTextI18n", "DiscouragedApi"})
@@ -237,7 +292,10 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
         TextView Result;
         Result = findViewById(R.id.TextResult);
         ((TextView) findViewById(R.id.TextQuesID)).setText("QUESTION " + position);
+        /* READ COUNTRY NAME INTO BUTTON CONTEXT AS QUESTION */
         ((Button) findViewById(R.id.Layout2_TextQuestion)).setText(L.get(id).Context);
+        /* -------------------------------------------------------------------------------------- */
+        /* READ IMAGE FROM CLOUD STORAGE BASED ON GIVEN FILE NAME INTO A BITMAP */
         int index = 0;
         StorageReference storeref;
         for (String context : new String[]{L.get(id).AnswerA, L.get(id).AnswerB, L.get(id).AnswerC, L.get(id).AnswerD}) {
@@ -254,12 +312,15 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
             }
             index++;
         }
+        /* -------------------------------------------------------------------------------------- */
         Result.setText("" + Progress);
     }
     private void LoadHighScore(){
+
         HighScore = Integer.parseInt(player.getScore());
     }
     private void SaveHighScore(){
+
         player.UpdateUser(this, ""+HighScore);
     }
 
