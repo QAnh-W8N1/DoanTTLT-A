@@ -1,78 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#009999"
+    android:background="#1EB4F0"
     tools:context=".activity.activityHighScore">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/TextHStitle"
-            android:layout_width="340dp"
-            android:layout_height="600dp"
-            android:background="#99CCCC"
-            android:text="HIGH SCORE"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textColor="@color/black"
-            android:textSize="38dp"
-            android:textStyle="bold"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="35dp"
-            tools:layout_editor_absoluteY="65dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="65dp"/>
+    <TextView
+        android:id="@+id/TextHStitle"
+        android:layout_width="340dp"
+        android:layout_height="600dp"
+        android:background="#4682B4"
+        android:text="HIGH SCORE"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="38dp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="65dp"/>
 
-        <TextView
-            android:id="@+id/TextHSScore"
-            android:layout_width="wrap_content"
-            android:layout_height="280dp"
-            android:text="0"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="150dp"
-            android:textStyle="bold"
-            tools:ignore="MissingConstraints"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="150dp"/>
+    <TextView
+        android:id="@+id/TextHSScore"
+        android:layout_width="wrap_content"
+        android:layout_height="280dp"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="150dp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"/>
 
-        <Button
-            android:id="@+id/ButtonHSPG"
-            android:layout_width="300dp"
-            android:layout_height="60dp"
-            android:backgroundTint="#CCFFFF"
-            android:text="PLAY GAME"
-            android:textAllCaps="true"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="55dp"
-            tools:layout_editor_absoluteY="500dp"
-            android:layout_below="@+id/TextHSScore"
-            android:layout_marginTop="100dp"
-            android:layout_centerHorizontal="true"/>
+    <Button
+        android:id="@+id/ButtonHSPG"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:backgroundTint="#E0FFFF"
+        android:text="PLAY GAME"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_below="@+id/TextHSScore"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"/>
 
-        <Button
-            android:id="@+id/ButtonHSExit"
-            android:layout_width="300dp"
-            android:layout_height="60dp"
-            android:backgroundTint="#CCFFFF"
-            android:text="EXIT"
-            android:textAllCaps="true"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="55dp"
-            tools:layout_editor_absoluteY="580dp"
-            android:layout_below="@+id/ButtonHSPG"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"/>
-    </RelativeLayout>
+    <Button
+        android:id="@+id/ButtonHSExit"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:backgroundTint="#E0FFFF"
+        android:text="EXIT"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_below="@+id/ButtonHSPG"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
 
+    <Button
+        android:id="@+id/ButtonStopMusic"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="StopMusic"
+        android:layout_marginStart="360dp"
+        android:background="@drawable/baseline_pause_circle_24"
+        android:backgroundTint="@color/white"
+        />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

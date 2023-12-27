@@ -1,5 +1,8 @@
 package com.com.flag.activity;
 
+import static com.com.flag.MainActivity.player;
+import static com.com.flag.MainActivity.soundBackground;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -17,15 +20,14 @@ import com.com.flag.R;
 
 public class activityHighScore extends Activity {
     TextView Txt1;
-    Button PlayGame, Exit;
-    int HighScore;
+    Button PlayGame, Exit, MuteSound;
+    int HighScore = Integer.parseInt(player.getScore());
     @SuppressLint("SetTextI18n")
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setContentView(R.layout.activity_highscore);
         Txt1 = (TextView)findViewById(R.id.TextHSScore);
-        LoadHighScore();
         Txt1.setText(""+ HighScore);
         PlayGame = (Button)findViewById(R.id.ButtonHSPG);
         Exit= (Button)findViewById(R.id.ButtonHSExit);
@@ -45,11 +47,12 @@ public class activityHighScore extends Activity {
                 startActivity(intent);
             }
         });
-    }
-    void LoadHighScore(){
-        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        if (sharedPreferences !=null){
-            HighScore = sharedPreferences.getInt("H",0);
-        }
+        MuteSound = findViewById(R.id.ButtonStopMusic);
+        MuteSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                soundBackground.Mute();
+            }
+        });
     }
 }

@@ -3,13 +3,11 @@ import com.com.flag.R;
 import com.com.flag.entity.*;
 
 import static com.com.flag.MainActivity.soundBackground;
-import static com.com.flag.MainActivity.PlayerName;
+import static com.com.flag.MainActivity.player;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -24,10 +22,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.database.DatabaseReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,24 +53,8 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
         if (intent != null)
         {
             path = intent.getStringExtra("path");
-            //diff = intent.getStringExtra("diff");
-            //style = intent.getStringExtra("style");
         }
         LoadHighScore();
-        /*if (Objects.equals(diff, "hard"))
-            path = "Data_Hard";
-            //questionList.GenerateQuestion(questionList.CountriesHard);
-        else if (Objects.equals(diff, "expert"))
-            path = "Data_Expert";
-            //questionList.GenerateQuestion(questionList.CountriesExpert);
-        else
-            path = "Data_Easy";
-            //questionList.GenerateQuestion(questionList.CountriesEasy);*/
-        /*if (Objects.equals(path, "Data_Survival"))
-        {
-            num = survival;
-            //questionList.GenerateQuestion(questionList.CountriesSurvival);
-        }*/
         StorageReference listRef = FirebaseStorage.getInstance().getReference().child(path);
         listRef.listAll()
                 .addOnSuccessListener(listResult -> {
@@ -111,21 +91,16 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
         if (position % 2 == 0) {
             if (idCheck == R.id.Layout2_TextQuestion)
                 textSpeech.ToSpeech(questionList.List.get(id).Context);
-                //AnswerTTS.speak(questionList.List.get(id).Context, TextToSpeech.QUEUE_FLUSH, null);
         }
         else {
             if (idCheck == R.id.ButtonAnsA) {
                 textSpeech.ToSpeech(questionList.List.get(id).AnswerA);
-                //AnswerTTS.speak(questionList.List.get(id).AnswerA, TextToSpeech.QUEUE_FLUSH, null);
             } else if (idCheck == R.id.ButtonAnsB) {
                 textSpeech.ToSpeech(questionList.List.get(id).AnswerB);
-                //AnswerTTS.speak(questionList.List.get(id).AnswerB, TextToSpeech.QUEUE_FLUSH, null);
             } else if (idCheck == R.id.ButtonAnsC) {
                 textSpeech.ToSpeech(questionList.List.get(id).AnswerC);
-                //AnswerTTS.speak(questionList.List.get(id).AnswerC, TextToSpeech.QUEUE_FLUSH, null);
             } else if (idCheck == R.id.ButtonAnsD) {
                 textSpeech.ToSpeech(questionList.List.get(id).AnswerD);
-                //AnswerTTS.speak(questionList.List.get(id).AnswerD, TextToSpeech.QUEUE_FLUSH, null);
             }
         }
         return false;
@@ -171,7 +146,6 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
                 Intent intent = new Intent(activityGamePlay.this, activityResult.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("Progress", Progress);
-                bundle.putInt("QuestionID", position);
                 intent.putExtra("MyPackage", bundle);
                 startActivity(intent);
                 if (Progress > HighScore) {
@@ -184,25 +158,12 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
     }
 
     private boolean CheckAnswer(int idCheck) {
+        AnswerCheck = true;
         if (CountdownTimer != null)
             CountdownTimer.cancel();
         DisableAnswerButton(new int[]{R.id.ButtonAnsA, R.id.ButtonAnsB, R.id.ButtonAnsC, R.id.ButtonAnsD}, idCheck);
         DisableHelpButton();
-        boolean correct = false;
-        if (idCheck == R.id.ButtonAnsA) {
-            if (questionList.List.get(id).Answer.compareTo("0") == 0)
-                correct = true;
-        } else if (idCheck == R.id.ButtonAnsB) {
-            if (questionList.List.get(id).Answer.compareTo("1") == 0)
-                correct = true;
-        } else if (idCheck == R.id.ButtonAnsC) {
-            if (questionList.List.get(id).Answer.compareTo("2") == 0)
-                correct = true;
-        } else if (idCheck == R.id.ButtonAnsD) {
-            if (questionList.List.get(id).Answer.compareTo("3") == 0)
-                correct = true;
-        }
-
+        boolean correct = questionList.CheckAnswer(id, idCheck);
         if (soundBackground.systemSound) {
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
             if (correct)
@@ -296,21 +257,10 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
         Result.setText("" + Progress);
     }
     private void LoadHighScore(){
-        SharedPreferences sharedPreferences = getSharedPreferences("MyData",
-                Context.MODE_PRIVATE);
-        if (sharedPreferences !=null){
-            HighScore = sharedPreferences.getInt("H",0);
-        }
+        HighScore = Integer.parseInt(player.getScore());
     }
     private void SaveHighScore(){
-        SharedPreferences sharedPreferences = getSharedPreferences("MyData",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("H",HighScore);
-        editor.apply();
-        Users users = new Users(PlayerName, ""+HighScore);
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference reference = db.getReference("Users");
-        reference.child(users.name()).setValue(users);
+        player.UpdateUser(this, ""+HighScore);
     }
 
     @SuppressLint("DiscouragedApi")
@@ -349,6 +299,16 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
             }
         }
     }
+    private void DisableHelpButton() {
+        for (int i : new int[]{R.id.ButtonHelp1, R.id.ButtonHelp2, R.id.ButtonHelp3}) {
+            ((Button) findViewById(i)).setEnabled(false);
+        }
+    }
+    private void EnableHelpButton() {
+        ((Button) findViewById(R.id.ButtonHelp1)).setEnabled(support.Help1);
+        ((Button) findViewById(R.id.ButtonHelp2)).setEnabled(support.Help2);
+        ((Button) findViewById(R.id.ButtonHelp3)).setEnabled(support.Help3);
+    }
     private void StartCountDown() {
         CountdownPB = findViewById(R.id.ProgressbarCountdown);
         CountdownTimer = new CountDownTimer(30000,1000) {
@@ -364,15 +324,5 @@ public class activityGamePlay extends Activity implements View.OnClickListener, 
                 CheckAnswer(-1);
             }
         }.start();
-    }
-    private void DisableHelpButton() {
-        for (int i : new int[]{R.id.ButtonHelp1, R.id.ButtonHelp2, R.id.ButtonHelp3}) {
-            ((Button) findViewById(i)).setEnabled(false);
-        }
-    }
-    private void EnableHelpButton() {
-        ((Button) findViewById(R.id.ButtonHelp1)).setEnabled(support.Help1);
-        ((Button) findViewById(R.id.ButtonHelp2)).setEnabled(support.Help2);
-        ((Button) findViewById(R.id.ButtonHelp3)).setEnabled(support.Help3);
     }
 }

@@ -1,7 +1,6 @@
 package com.com.flag;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,10 +9,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.com.flag.activity.activityEntryPoint;
 import com.com.flag.entity.SoundBackground;
+import com.com.flag.entity.Users;
 
 public class MainActivity extends AppCompatActivity {
     public static SoundBackground soundBackground = new SoundBackground();
-    public static String PlayerName = "Anonymous";
+    public static Users player;
+    String PlayerName;
     Button PlayGame, MuteSound;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 PlayerName = ((EditText) findViewById(R.id.EditMainName)).getText().toString();
+                if (PlayerName.equals(""))
+                    PlayerName = "Anonymous";
+                player = new Users(MainActivity.this, PlayerName);
                 /* Khởi tạo Intent, bắt đầu activity tiếp theo */
                 Intent intent = new Intent(MainActivity.this, activityEntryPoint.class);
                 startActivity(intent);
